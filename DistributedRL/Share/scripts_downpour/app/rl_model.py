@@ -17,7 +17,7 @@ from keras.preprocessing import image
 from keras.initializers import random_normal
 
 # Prevent TensorFlow from allocating the entire GPU at the start of the program.
-# Otherwise, AirSim will sometimes refuse to launch, as it will be unable to 
+# Otherwise, AutonomySim will sometimes refuse to launch, as it will be unable to 
 config = tf.ConfigProto()
 config.gpu_options.allow_growth = True
 session = tf.Session(config=config)

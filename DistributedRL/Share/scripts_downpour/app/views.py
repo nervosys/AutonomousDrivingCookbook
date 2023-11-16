@@ -242,9 +242,9 @@ def write_ip():
 print('-----------STARTING TRAINER---------------')
 print('-----------STARTING TRAINER---------------e', file=sys.stderr)
 
-# Identify this node as a trainer, and kill all running instances of AirSim
+# Identify this node as a trainer, and kill all running instances of AutonomySim
 os.system('DEL D:\\*.agent')
-os.system('START "" powershell.exe D:\\AD_Cookbook_AirSim\\Scripts\\DistributedRL\\restart_airsim_if_agent.ps1')
+os.system('START "" powershell.exe D:\\AD_Cookbook_AutonomySim\\Scripts\\DistributedRL\\restart_AutonomySim_if_agent.ps1')
 sys.stdout.flush()
 sys.stderr.flush()
 

@@ -13,9 +13,8 @@ def setup_logs():
     sys.stdout = open(os.path.join(output_dir, '{0}.stdout.txt'.format(os.environ['AZ_BATCH_NODE_ID'])), 'w')
     sys.stderr = open(os.path.join(output_dir, '{0}.stderr.txt'.format(os.environ['AZ_BATCH_NODE_ID'])), 'w')
 
-
-
 if __name__ == "__main__":
+    
     print('IN MANAGE.PY')
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "downpour.settings")
     

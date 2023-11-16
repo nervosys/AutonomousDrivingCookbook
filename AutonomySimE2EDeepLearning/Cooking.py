@@ -76,8 +76,8 @@ def splitTrainValidationAndTestData(all_data_mappings, split_ratio=(0.7, 0.2, 0.
 
     return [train_data_mappings, validation_data_mappings, test_data_mappings]
     
-def generateDataMapAirSim(folders):
-    """ Data map generator for simulator(AirSim) data. Reads the driving_log csv file and returns a list of 'center camera image name - label(s)' tuples
+def generateDataMapAutonomySim(folders):
+    """ Data map generator for simulator(AutonomySim) data. Reads the driving_log csv file and returns a list of 'center camera image name - label(s)' tuples
            Inputs:
                folders: list of folders to collect data from
 
@@ -90,7 +90,7 @@ def generateDataMapAirSim(folders):
     all_mappings = {}
     for folder in folders:
         print('Reading data from {0}...'.format(folder))
-        current_df = pd.read_csv(os.path.join(folder, 'airsim_rec.txt'), sep='\t')
+        current_df = pd.read_csv(os.path.join(folder, 'AutonomySim_rec.txt'), sep='\t')
         
         for i in range(1, current_df.shape[0] - 1, 1):
             previous_state = list(current_df.iloc[i-1][['Steering', 'Throttle', 'Brake', 'Speed (kmph)']])
@@ -189,7 +189,7 @@ def cook(folders, output_directory, train_eval_test_split):
        print("Preprocessed data already exists at: {0}. Skipping preprocessing.".format(output_directory))
 
     else:
-        all_data_mappings = generateDataMapAirSim(folders)
+        all_data_mappings = generateDataMapAutonomySim(folders)
         
         split_mappings = splitTrainValidationAndTestData(all_data_mappings, split_ratio=train_eval_test_split)
         

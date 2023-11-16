@@ -12,7 +12,7 @@ Param(
 Login-AzureRMAccount
 Select-AzureRmSubscription -SubscriptionId $subscriptionId
 
-$cmd = 'azcopy /Source:https://airsimimage.blob.core.windows.net/airsimimage/AirsimImage.vhd /Dest:https://{0}.blob.core.windows.net/prereq/AirsimImage.vhd /destKey:{1}' -f $storageAccountName, $storageAccountKey
+$cmd = 'azcopy /Source:https://AutonomySimimage.blob.core.windows.net/AutonomySimimage/AirsimImage.vhd /Dest:https://{0}.blob.core.windows.net/prereq/AirsimImage.vhd /destKey:{1}' -f $storageAccountName, $storageAccountKey
 
 write-host $cmd
 iex $cmd

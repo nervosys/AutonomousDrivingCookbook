@@ -1,4 +1,4 @@
-# Autonomous Driving using End-to-End Deep Learning: an AirSim tutorial
+# Autonomous Driving using End-to-End Deep Learning: an AutonomySim tutorial
 
 ### Authors:
 
@@ -8,7 +8,7 @@
 
 ## Overview
 
-In this tutorial, you will learn how to train and test an end-to-end deep learning model for autonomous driving using data collected from the [AirSim simulation environment](https://github.com/Microsoft/AirSim). You will train a model to learn how to steer a car through a portion of the Mountain/Landscape map in AirSim using a single front facing webcam for visual input. Such a task is usually considered the "hello world" of autonomous driving, but after finishing this tutorial you will have enough background to start exploring new ideas on your own. Through the length of this tutorial, you will also learn some practical aspects and nuances of working with end-to-end deep learning methods.
+In this tutorial, you will learn how to train and test an end-to-end deep learning model for autonomous driving using data collected from the [AutonomySim simulation environment](https://github.com/nervosys/AutonomySim). You will train a model to learn how to steer a car through a portion of the Mountain/Landscape map in AutonomySim using a single front facing webcam for visual input. Such a task is usually considered the "hello world" of autonomous driving, but after finishing this tutorial you will have enough background to start exploring new ideas on your own. Through the length of this tutorial, you will also learn some practical aspects and nuances of working with end-to-end deep learning methods.
 
 Here's a short sample of the model in action:
 
@@ -58,10 +58,10 @@ You should also be comfortable with Python. At the very least, you should be abl
 
 ### Simulator Package
 
-We have created a standalone build of the AirSim simulation environment for the tutorials in this cookbook. [You can download the build package from here](https://airsimtutorialdataset.blob.core.windows.net/e2edl/AD_Cookbook_AirSim.7z). Consider using [AzCopy](https://docs.microsoft.com/en-us/azure/storage/common/storage-use-azcopy), as the file size is large. After downloading the package, unzip it and run the PowerShell command
+We have created a standalone build of the AutonomySim simulation environment for the tutorials in this cookbook. [You can download the build package from here](https://AutonomySimtutorialdataset.blob.core.windows.net/e2edl/AD_Cookbook_AutonomySim.7z). Consider using [AzCopy](https://docs.microsoft.com/en-us/azure/storage/common/storage-use-azcopy), as the file size is large. After downloading the package, unzip it and run the PowerShell command
 
 `
-.\AD_Cookbook_Start_AirSim.ps1 landscape
+.\AD_Cookbook_Start_AutonomySim.ps1 landscape
 `
 
 to start the simulator in the landscape environment.
@@ -74,7 +74,7 @@ If you do not have a GPU available, you can spin up a [Deep Learning VM on Azure
 
 ### Dataset
 
-The dataset for the model is quite large. [You can download it from here](https://aka.ms/AirSimTutorialDataset). The first notebook will provide guidance on how to access the data once you have downloaded it. The final uncompressed data set size is approximately 3.25GB (which although is nothing compared to the petabytes of data needed to train an actual self-driving car, should be enough for the purpose of this tutorial).
+The dataset for the model is quite large. [You can download it from here](https://aka.ms/AutonomySimTutorialDataset). The first notebook will provide guidance on how to access the data once you have downloaded it. The final uncompressed data set size is approximately 3.25GB (which although is nothing compared to the petabytes of data needed to train an actual self-driving car, should be enough for the purpose of this tutorial).
 
 ### A note from the curators
 

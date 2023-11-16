@@ -11,7 +11,7 @@
 
 ## Overview
 
-In this tutorial, you will learn how to train a distributed deep reinforcement learning model for autonomous driving leveraging the power of cloud computing. This tutorial serves as an introduction to training deep learning AD models at scale. Through the course of this tutorial you will learn how to set up a cluster of virtual machine nodes running the [AirSim simulation environment](https://github.com/Microsoft/AirSim) and then distribute a training job across the nodes to train a model to steer a car through the Neighborhood environment in AirSim using reinforcement learning. A visualization of this process on four such VM nodes can be seen below. 
+In this tutorial, you will learn how to train a distributed deep reinforcement learning model for autonomous driving leveraging the power of cloud computing. This tutorial serves as an introduction to training deep learning AD models at scale. Through the course of this tutorial you will learn how to set up a cluster of virtual machine nodes running the [AutonomySim simulation environment](https://github.com/nervosys/AutonomySim) and then distribute a training job across the nodes to train a model to steer a car through the Neighborhood environment in AutonomySim using reinforcement learning. A visualization of this process on four such VM nodes can be seen below. 
 
 ![car_driving_1](car_driving_1.gif)![car_driving_2](car_driving_2.gif)
 ![car_driving_3](car_driving_3.gif)![car_driving_4](car_driving_4.gif)
@@ -30,7 +30,7 @@ This tutorial was designed keeping autonomous driving practitioners in mind. Res
 
 This tutorial was designed with advanced users and practitioners in mind, hence it assumes the reader has a background in deep learning, and is familiar with the basic concepts of reinforcement learning (reward functions, episodes etc.). A helpful introduction to reinforcement learning can be found [here](https://medium.freecodecamp.org/deep-reinforcement-learning-where-to-start-291fb0058c01).
 
-It is also highly recommended that the reader has familiarity with the AirSim simulation platform. This tutorial builds upon certain concepts introduced in our [end-to-end deep learning for autonomous driving](../AirSimE2EDeepLearning/README.md) tutorial. We therefore recommend going through that tutorial first.
+It is also highly recommended that the reader has familiarity with the AutonomySim simulation platform. This tutorial builds upon certain concepts introduced in our [end-to-end deep learning for autonomous driving](../AutonomySimE2EDeepLearning/README.md) tutorial. We therefore recommend going through that tutorial first.
 
 #### Environment Setup
 
@@ -54,10 +54,10 @@ It is also highly recommended that the reader has familiarity with the AirSim si
 
 #### Simulator Package
 
-We have created a standalone build of the AirSim simulation environment for the tutorials in this cookbook. [You can download the build package from here](https://airsimtutorialdataset.blob.core.windows.net/e2edl/AD_Cookbook_AirSim.7z). Consider using [AzCopy](https://docs.microsoft.com/en-us/azure/storage/common/storage-use-azcopy), as the file size is large. After downloading the package, unzip it and run the PowerShell command
+We have created a standalone build of the AutonomySim simulation environment for the tutorials in this cookbook. [You can download the build package from here](https://AutonomySimtutorialdataset.blob.core.windows.net/e2edl/AD_Cookbook_AutonomySim.7z). Consider using [AzCopy](https://docs.microsoft.com/en-us/azure/storage/common/storage-use-azcopy), as the file size is large. After downloading the package, unzip it and run the PowerShell command
 
 `
-.\AD_Cookbook_Start_AirSim.ps1 neighborhood
+.\AD_Cookbook_Start_AutonomySim.ps1 neighborhood
 `
 
 to start the simulator in the neighborhood environment.

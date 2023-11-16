@@ -22,7 +22,7 @@ class MsgpackMixin:
         return obj
 
 
-class AirSimImageType:    
+class AutonomySimImageType:    
     Scene = 0
     DepthPlanner = 1
     DepthPerspective = 2
@@ -95,7 +95,7 @@ class YawMode(MsgpackMixin):
 
 class ImageRequest(MsgpackMixin):
     camera_id = np.uint8(0)
-    image_type = AirSimImageType.Scene
+    image_type = AutonomySimImageType.Scene
     pixels_as_float = False
     compress = False
 
@@ -117,7 +117,7 @@ class ImageResponse(MsgpackMixin):
     compress = True
     width = 0
     height = 0
-    image_type = AirSimImageType.Scene
+    image_type = AutonomySimImageType.Scene
 
 class CarControls(MsgpackMixin):
     throttle = np.float32(0)
@@ -145,7 +145,7 @@ class CarState(MsgpackMixin):
     velocity = Vector3r()
     orientation = Quaternionr()
 
-class AirSimClientBase:
+class AutonomySimClientBase:
     def __init__(self, ip, port):
         self.client = msgpackrpc.Client(msgpackrpc.Address(ip, port), timeout = 3600)
         
@@ -181,7 +181,7 @@ class AirSimClientBase:
             
     # camera control
     # simGetImage returns compressed png in array of bytes
-    # image_type uses one of the AirSimImageType members
+    # image_type uses one of the AutonomySimImageType members
     def simGetImage(self, camera_id, image_type):
         # because this method returns std::vector<uint8>, msgpack decides to encode it as a string unfortunately.
         result = self.client.call('simGetImage', camera_id, image_type)
@@ -191,7 +191,7 @@ class AirSimClientBase:
 
     # camera control
     # simGetImage returns compressed png in array of bytes
-    # image_type uses one of the AirSimImageType members
+    # image_type uses one of the AutonomySimImageType members
     def simGetImages(self, requests):
         responses_raw = self.client.call('simGetImages', requests)
         return [ImageResponse.from_msgpack(response_raw) for response_raw in responses_raw]
@@ -210,7 +210,7 @@ class AirSimClientBase:
         return np.reshape(np.asarray(flst, np.float32), (height, width))
     @staticmethod
     def getPfmArray(response):
-        return AirSimClientBase.listTo2DFloatArray(response.image_data_float, response.width, response.height)
+        return AutonomySimClientBase.listTo2DFloatArray(response.image_data_float, response.width, response.height)
 
     @staticmethod
     def get_public_fields(obj):
@@ -223,11 +223,11 @@ class AirSimClientBase:
 
     @staticmethod
     def to_dict(obj):
-        return dict([attr, getattr(obj, attr)] for attr in AirSimClientBase.get_public_fields(obj))
+        return dict([attr, getattr(obj, attr)] for attr in AutonomySimClientBase.get_public_fields(obj))
 
     @staticmethod
     def to_str(obj):
-        return str(AirSimClientBase.to_dict(obj))
+        return str(AutonomySimClientBase.to_dict(obj))
 
     @staticmethod
     def write_file(filename, bstr):
@@ -418,11 +418,11 @@ class AirSimClientBase:
             png_pack(b'IDAT', zlib.compress(raw_data, 9)),
             png_pack(b'IEND', b'')])
 
-        AirSimClientBase.write_file(filename, png_bytes)
+        AutonomySimClientBase.write_file(filename, png_bytes)
 
 
 # -----------------------------------  Multirotor APIs ---------------------------------------------
-class MultirotorClient(AirSimClientBase, object):
+class MultirotorClient(AutonomySimClientBase, object):
     def __init__(self, ip = ""):
         if (ip == ""):
             ip = "127.0.0.1"
@@ -499,7 +499,7 @@ class MultirotorClient(AirSimClientBase, object):
         return self.client.call('rotateByYawRate', yaw_rate, duration)
 
 # -----------------------------------  Car APIs ---------------------------------------------
-class CarClient(AirSimClientBase, object):
+class CarClient(AutonomySimClientBase, object):
     def __init__(self, ip = ""):
         if (ip == ""):
             ip = "127.0.0.1"

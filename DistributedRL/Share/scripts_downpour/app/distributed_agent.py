@@ -1,4 +1,4 @@
-from airsim_client import *
+from AutonomySim_client import *
 from rl_model import RlModel
 import time
 import numpy as np
@@ -29,7 +29,7 @@ class DistributedAgent():
         print('Starting time: {0}'.format(datetime.datetime.utcnow()), file=sys.stderr)
         self.__model_buffer = None
         self.__model = None
-        self.__airsim_started = False
+        self.__AutonomySim_started = False
         self.__data_dir = parameters['data_dir']
         self.__per_iter_epsilon_reduction = float(parameters['per_iter_epsilon_reduction'])
         self.__min_epsilon = float(parameters['min_epsilon'])
@@ -50,10 +50,10 @@ class DistributedAgent():
         else:
             self.__weights_path = None
             
-        if 'airsim_path' in parameters:
-            self.__airsim_path = parameters['airsim_path']
+        if 'AutonomySim_path' in parameters:
+            self.__AutonomySim_path = parameters['AutonomySim_path']
         else:
-            self.__airsim_path = None
+            self.__AutonomySim_path = None
 
         self.__local_run = 'local_run' in parameters
 
@@ -80,7 +80,7 @@ class DistributedAgent():
         self.__run_function()
 
     # The function that will be run during training.
-    # It will initialize the connection to the trainer, start AirSim, and continuously run training iterations.
+    # It will initialize the connection to the trainer, start AutonomySim, and continuously run training iterations.
     def __run_function(self):
         print('Starting run function')
         
@@ -128,23 +128,23 @@ class DistributedAgent():
             self.__model = RlModel(self.__weights_path, self.__train_conv_layers)
             
             
-        # Connect to the AirSim exe
-        self.__connect_to_airsim()
+        # Connect to the AutonomySim exe
+        self.__connect_to_AutonomySim()
 
         # Fill the replay memory by driving randomly.
         print('Filling replay memory...')
         while True:
             print('Running Airsim Epoch.')
             try:
-                self.__run_airsim_epoch(True)
+                self.__run_AutonomySim_epoch(True)
                 percent_full = 100.0 * len(self.__experiences['actions'])/self.__replay_memory_size
                 print('Replay memory now contains {0} members. ({1}% full)'.format(len(self.__experiences['actions']), percent_full))
 
                 if (percent_full >= 100.0):
                     break
             except msgpackrpc.error.TimeoutError:
-                print('Lost connection to AirSim while fillling replay memory. Attempting to reconnect.')
-                self.__connect_to_airsim()
+                print('Lost connection to AutonomySim while fillling replay memory. Attempting to reconnect.')
+                self.__connect_to_AutonomySim()
             
         # Get the latest model. Other agents may have finished before us.
         print('Replay memory filled. Starting main loop...')
@@ -155,9 +155,9 @@ class DistributedAgent():
             try:
                 if (self.__model is not None):
 
-                    #Generate a series of training examples by driving the vehicle in AirSim
+                    #Generate a series of training examples by driving the vehicle in AutonomySim
                     print('Running Airsim Epoch.')
-                    experiences, frame_count = self.__run_airsim_epoch(False)
+                    experiences, frame_count = self.__run_AutonomySim_epoch(False)
 
                     # If we didn't immediately crash, train on the gathered experiences
                     if (frame_count > 0):
@@ -171,23 +171,23 @@ class DistributedAgent():
                         
                         # If we successfully sampled, train on the collected minibatches and send the gradients to the trainer node
                         if (len(sampled_experiences) > 0):
-                            print('Publishing AirSim Epoch.')
+                            print('Publishing AutonomySim Epoch.')
                             self.__publish_batch_and_update_model(sampled_experiences, frame_count)
             
-            # Occasionally, the AirSim exe will stop working.
+            # Occasionally, the AutonomySim exe will stop working.
             # For example, if a user connects to the node to visualize progress.
             # In that case, attempt to reconnect.
             except msgpackrpc.error.TimeoutError:
-                print('Lost connection to AirSim. Attempting to reconnect.')
-                self.__connect_to_airsim()
+                print('Lost connection to AutonomySim. Attempting to reconnect.')
+                self.__connect_to_AutonomySim()
 
-    # Connects to the AirSim Exe.
+    # Connects to the AutonomySim Exe.
     # Assume that it is already running. After 10 successive attempts, attempt to restart the executable.
-    def __connect_to_airsim(self):
+    def __connect_to_AutonomySim(self):
         attempt_count = 0
         while True:
             try:
-                print('Attempting to connect to AirSim (attempt {0})'.format(attempt_count))
+                print('Attempting to connect to AutonomySim (attempt {0})'.format(attempt_count))
                 self.__car_client = CarClient()
                 self.__car_client.confirmConnection()
                 self.__car_client.enableApiControl(True)
@@ -198,12 +198,12 @@ class DistributedAgent():
                 print('Failed to connect.')
                 attempt_count += 1
                 if (attempt_count % 10 == 0):
-                    print('10 consecutive failures to connect. Attempting to start AirSim on my own.')
+                    print('10 consecutive failures to connect. Attempting to start AutonomySim on my own.')
                     
                     if self.__local_run:
-                        os.system('START "" powershell.exe {0}'.format(os.path.join(self.__airsim_path, 'AD_Cookbook_Start_AirSim.ps1 neighborhood -windowed')))
+                        os.system('START "" powershell.exe {0}'.format(os.path.join(self.__AutonomySim_path, 'AD_Cookbook_Start_AutonomySim.ps1 neighborhood -windowed')))
                     else:
-                        os.system('START "" powershell.exe D:\\AD_Cookbook_AirSim\\Scripts\\DistributedRL\\restart_airsim_if_agent.ps1')
+                        os.system('START "" powershell.exe D:\\AD_Cookbook_AutonomySim\\Scripts\\DistributedRL\\restart_AutonomySim_if_agent.ps1')
                 print('Waiting a few seconds.')
                 time.sleep(10)
 
@@ -215,10 +215,10 @@ class DistributedAgent():
         buffer.append(item)
         return buffer
     
-    # Runs an interation of data generation from AirSim.
+    # Runs an interation of data generation from AutonomySim.
     # Data will be saved in the replay memory.
-    def __run_airsim_epoch(self, always_random):
-        print('Running AirSim epoch.')
+    def __run_AutonomySim_epoch(self, always_random):
+        print('Running AutonomySim epoch.')
         
         # Pick a random starting point on the roads
         starting_points, starting_direction = self.__get_next_starting_point()
@@ -230,7 +230,7 @@ class DistributedAgent():
         wait_delta_sec = 0.01
 
         print('Getting Pose')
-        self.__car_client.simSetPose(Pose(Vector3r(starting_points[0], starting_points[1], starting_points[2]), AirSimClientBase.toQuaternion(starting_direction[0], starting_direction[1], starting_direction[2])), True)
+        self.__car_client.simSetPose(Pose(Vector3r(starting_points[0], starting_points[1], starting_points[2]), AutonomySimClientBase.toQuaternion(starting_direction[0], starting_direction[1], starting_direction[2])), True)
 
         # Currently, simSetPose does not allow us to set the velocity. 
         # So, if we crash and call simSetPose, the car will be still moving at its previous velocity.
@@ -243,7 +243,7 @@ class DistributedAgent():
         time.sleep(4)
         
         print('Resetting')
-        self.__car_client.simSetPose(Pose(Vector3r(starting_points[0], starting_points[1], starting_points[2]), AirSimClientBase.toQuaternion(starting_direction[0], starting_direction[1], starting_direction[2])), True)
+        self.__car_client.simSetPose(Pose(Vector3r(starting_points[0], starting_points[1], starting_points[2]), AutonomySimClientBase.toQuaternion(starting_direction[0], starting_direction[1], starting_direction[2])), True)
 
         #Start the car rolling so it doesn't get stuck
         print('Running car for a few seconds...')
@@ -452,9 +452,9 @@ class DistributedAgent():
         response = requests.get('http://{0}:80/latest'.format(self.__trainer_ip_address)).json()
         self.__model.from_packet(response)
 
-    # Gets an image from AirSim
+    # Gets an image from AutonomySim
     def __get_image(self):
-        image_response = self.__car_client.simGetImages([ImageRequest(0, AirSimImageType.Scene, False, False)])[0]
+        image_response = self.__car_client.simGetImages([ImageRequest(0, AutonomySimImageType.Scene, False, False)])[0]
         image1d = np.fromstring(image_response.image_data_uint8, dtype=np.uint8)
         image_rgba = image1d.reshape(image_response.height, image_response.width, 4)
 
@@ -532,7 +532,7 @@ class DistributedAgent():
                 self.__reward_points.append(tuple((first_point, second_point)))
 
     # Randomly selects a starting point on the road
-    # Used for initializing an iteration of data generation from AirSim
+    # Used for initializing an iteration of data generation from AutonomySim
     def __get_next_starting_point(self):
     
         # Get the current state of the vehicle
@@ -610,14 +610,14 @@ np.set_printoptions(threshold=np.nan, suppress=True)
 
 # Check additional parameters needed for local run
 if 'local_run' in parameters:
-    if 'airsim_path' not in parameters:
-        print('ERROR: for a local run, airsim_path must be defined.')
-        print('Please provide the path to airsim in a parameter like "airsim_path=<path_to_airsim>"')
-        print('It should point to the folder containing AD_Cookbook_Start_AirSim.ps1')
+    if 'AutonomySim_path' not in parameters:
+        print('ERROR: for a local run, AutonomySim_path must be defined.')
+        print('Please provide the path to AutonomySim in a parameter like "AutonomySim_path=<path_to_AutonomySim>"')
+        print('It should point to the folder containing AD_Cookbook_Start_AutonomySim.ps1')
         sys.exit()
     if 'batch_update_frequency' not in parameters:
         print('ERROR: for a local run, batch_update_frequency must be defined.')
-        print('Please provide the path to airsim in a parameter like "batch_update_frequency=<int>"')
+        print('Please provide the path to AutonomySim in a parameter like "batch_update_frequency=<int>"')
         sys.exit()
 
 # Set up the logging to the file share if not running locally.
@@ -631,12 +631,12 @@ print('***')
 print(os.environ)
 print('***')
 
-# Identify the node as an agent and start AirSim
+# Identify the node as an agent and start AutonomySim
 if 'local_run' not in parameters:
     os.system('echo 1 >> D:\\agent.agent')
-    os.system('START "" powershell.exe D:\\AD_Cookbook_AirSim\\Scripts\\DistributedRL\\restart_airsim_if_agent.ps1')
+    os.system('START "" powershell.exe D:\\AD_Cookbook_AutonomySim\\Scripts\\DistributedRL\\restart_AutonomySim_if_agent.ps1')
 else:
-    os.system('START "" powershell.exe {0}'.format(os.path.join(parameters['airsim_path'], 'AD_Cookbook_Start_AirSim.ps1 neighborhood -windowed')))
+    os.system('START "" powershell.exe {0}'.format(os.path.join(parameters['AutonomySim_path'], 'AD_Cookbook_Start_AutonomySim.ps1 neighborhood -windowed')))
     
 # Start the training
 agent = DistributedAgent(parameters)
