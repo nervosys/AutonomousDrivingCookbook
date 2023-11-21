@@ -1,18 +1,14 @@
-# The Autonomous Driving Cookbook (Preview)
-
-
+# AutonomySim Driving Cookbook (Preview)
 
 ------
-
 #### **NOTE:**
 
 This project is developed and being maintained by [Project Road Runner](https://www.microsoft.com/en-us/garage/blog/2018/04/project-road-runner-train-autonomous-driving-algorithms-for-road-safety/) at Microsoft Garage. This is currently a work in progress. We will continue to add more tutorials and scenarios based on requests from our users and the availability of our collaborators.
-
 ------
+
 <p align="center">
   <img src="AutonomySimE2EDeepLearning/car_driving.gif?raw=true" />
 </p>
-
 
 Autonomous driving has transcended far beyond being a crazy moonshot idea over the last half decade or so. It has quickly become one of the biggest technologies today that promises to shape our tomorrow, not very unlike when cars first came into existence. A big driver powering this change is the recent advances in software (Artificial Intelligence), hardware (GPUs, FPGAs etc.) and cloud computing, which have enabled ingest and processing of large amounts of data, making it possible for companies to push for levels 4 and 5 of autonomy. Achieving those levels of autonomy though, require training on hundreds of millions and sometimes hundreds of billions of miles worth of training data to demonstrate reliability, according to a [report](https://www.rand.org/pubs/research_reports/RR1478.html) from RAND.
 
@@ -21,7 +17,6 @@ Despite the large amount of data collected every day, it is still insufficient t
 <p align="center">
   <img src="DistributedRL/car_driving_2.gif?raw=true" />
 </p>
-
 
 We believe that the best way to make a technology grow is by making it easily available and accessible to everyone. This is best achieved by making the barrier of entry to it as low as possible. At Microsoft, our mission is to empower every person and organization on the planet to achieve more. That has been our primary motivation behind preparing this cookbook. Our aim with this project is to help you get quickly acquainted and familiarized with different onboarding scenarios in autonomous driving so you can take what you learn here and employ it in your everyday job with a minimal barrier to entry.
 
